@@ -1,5 +1,13 @@
 {
+  "version": 2,
   "env": {
     "OPENAI_API_KEY": "@openai-api-key"
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat.js"
+    }
+  ]
 }
+

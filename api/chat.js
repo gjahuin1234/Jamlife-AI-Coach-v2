@@ -17,22 +17,14 @@ export default async function handler(req, res) {
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-4", // 
+                model: "gpt-3.5-turbo",
                 messages: [{ role: "user", content: message }]
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Error en la respuesta de OpenAI:", errorData);
-            return res.status(response.status).json({ error: errorData });
-        }
-
         const data = await response.json();
-        res.status(200).json({ response: data.choices?.[0]?.message?.content || "No hubo respuesta de la IA" });
-
+        res.status(200).json({ response: data.choices?.[0]?.message?.content || "No hubo respuesta" });
     } catch (error) {
-        console.error("Error al procesar la solicitud:", error);
         res.status(500).json({ error: "Error procesando la respuesta" });
     }
 }

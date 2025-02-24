@@ -1,16 +1,13 @@
-const chatContainer = document.getElementById("chat-container");
-const userInput = document.getElementById("user-input");
-
 async function sendMessage() {
-    const message = userInput.value.trim();
-    if (!message) return;
+    const userInput = document.getElementById("user-input").value;
+    if (!userInput.trim()) return;
 
-    // Agregar mensaje del usuario al chat
-    appendMessage("Tú", message);
-    userInput.value = "";
+    const chatContainer = document.getElementById("chat-container");
+    chatContainer.innerHTML += `<p><strong>Tú:</strong> ${userInput}</p>`;
+
+    document.getElementById("user-input").value = "";
 
     try {
-        // Llamar a OpenAI API
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -18,27 +15,17 @@ async function sendMessage() {
                 "Authorization": `Bearer ${OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-4", // Asegúrate de que tienes acceso a GPT-4 o cambia a gpt-3.5-turbo
-                messages: [{ role: "system", content: "Eres Jamlife AI, una coach experta en bienestar con un tono cálido y amigable para mujeres en Australia." }, 
-                           { role: "user", content: message }]
+                model: "gpt-3.5-turbo",
+                messages: [{ role: "user", content: userInput }]
             })
         });
 
         const data = await response.json();
-        const aiMessage = data.choices[0].message.content;
-        
-        // Agregar respuesta de Jamlife AI al chat
-        appendMessage("Jamlife AI", aiMessage);
-    } catch (error) {
-        console.error("Error al llamar a OpenAI:", error);
-        appendMessage("Jamlife AI", "Lo siento, hubo un problema al procesar tu mensaje.");
-    }
-}
+        const aiMessage = data.choices?.[0]?.message?.content || "Hubo un problema al obtener la respuesta.";
 
-// Función para agregar mensajes al chat
-function appendMessage(sender, text) {
-    const messageElement = document.createElement("div");
-    messageElement.classList.add("message");
-    messageElement.innerHTML = `<strong>${sender}:</strong> ${text}`;
-    chatContainer.appendChild(messageElement);
+        chatContainer.innerHTML += `<p><strong>Jamlife AI:</strong> ${aiMessage}</p>`;
+    } catch (error) {
+        chatContainer.innerHTML += `<p><strong>Jamlife AI:</strong> Lo siento, hubo un problema al procesar tu mensaje.</p>`;
+        console.error("Error:", error);
+    }
 }

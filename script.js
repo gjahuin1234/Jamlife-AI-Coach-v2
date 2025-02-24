@@ -1,13 +1,14 @@
 async function sendMessage() {
-    const userInput = document.getElementById("user-input").value;
-    if (!userInput) return;
+    const userMessage = document.getElementById("user-input").value;
 
-    const response = await fetch("https://jamlife-ai-coach-v2.vercel.app/api/chat", {
+    if (!userMessage.trim()) return;
+
+    const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message: userInput }),
+        body: JSON.stringify({ message: userMessage })
     });
 
     const data = await response.json();

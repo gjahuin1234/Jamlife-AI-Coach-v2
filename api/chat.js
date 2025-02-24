@@ -4,11 +4,14 @@ export default async function handler(req, res) {
     }
 
     const { message } = req.body;
+
     if (!message) {
         return res.status(400).json({ error: "Mensaje vacío" });
     }
 
     try {
+        console.log("Enviando solicitud a OpenAI con mensaje:", message); // Log para ver qué mensaje se envía
+
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -22,12 +25,16 @@ export default async function handler(req, res) {
         });
 
         const data = await response.json();
-        console.log("Respuesta de OpenAI:", data);  // ← Esto es clave para ver qué responde OpenAI
+        
+        console.log("Respuesta de OpenAI:", data); // Log para ver la respuesta de OpenAI
 
-        res.status(200).json({ response: data.choices?.[0]?.message?.content || "No hubo respuesta" });
+        if (!data.choices || data.choices.length === 0) {
+            return res.status(500).json({ error: "OpenAI no devolvió respuesta válida" });
+        }
 
+        res.status(200).json({ response: data.choices[0].message.content });
     } catch (error) {
-        console.error("Error en la API:", error);
+        console.error("Error en la API de OpenAI:", error);
         res.status(500).json({ error: "Error procesando la respuesta" });
     }
 }

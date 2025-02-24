@@ -1,6 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/chat", "destination": "/chat.html" }
-  ]
+  "env": {
+    "OPENAI_API_KEY": "@openai-api-key"
+  }
 }
-

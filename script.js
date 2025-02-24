@@ -15,7 +15,7 @@ async function sendMessage() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer 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`
+                "Authorization": `Bearer ${OPENAI_API_KEY}`
             },
             body: JSON.stringify({
                 model: "gpt-4", // Asegúrate de que tienes acceso a GPT-4 o cambia a gpt-3.5-turbo
